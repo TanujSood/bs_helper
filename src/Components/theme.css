@@ -1,0 +1,10 @@
+.logo{
+    margin: 10px 10px 10px 10px;
+    width: 180px;
+    height: 40px;
+    background-color: rgb(238, 238, 238);
+}
+
+.ant-input-number {
+    width: 100%;
+  }
