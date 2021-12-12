@@ -6,9 +6,9 @@ import '../index.css';
 import { Button, InputNumber } from 'antd';
 
 
-function Submit() {
+function Submit(props) {
 
-    const [Data,setData]=useState(null)
+    const [Data,setData] = useState(null)
 
     function handleChange(val) {
         console.log(val)
@@ -16,7 +16,8 @@ function Submit() {
     }
 
     function handleClick() {
-        alert("The number is " + {Data})
+        alert("The number is " + Data)
+        props.onSubmitt('jajaja')
     }
 
     return (
