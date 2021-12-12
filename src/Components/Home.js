@@ -47,13 +47,13 @@ function Home(){
         </Sider>
         <Layout className="site-layout">
           <Header className="site-layout-background" style={{ padding: 0 }} />
-          <div>
+          {/* <div>
           <Submit onSubmitt={value => {
           onSubmitt(value)
         }}/>
           <Snippet />
         
-      </div>
+      </div> */}
           <Content style={{ margin: '24px 24px' }}>
             <Parameters />
           </Content>

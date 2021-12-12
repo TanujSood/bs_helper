@@ -4,7 +4,7 @@ import './theme.css';
 
 import { Row, Col, Divider } from 'antd';
 import { Typography, Layout } from 'antd';
-import { InputNumber, Button } from 'antd';
+import { InputNumber, Button, Slider } from 'antd';
 
 const style = { background: '#0092ff', height: '100px', padding: '8px 0' };
 const Footer = Layout;
@@ -12,6 +12,11 @@ const Footer = Layout;
 function onChange(value) {
     console.log('changed', value);
   }
+
+const marks = {
+    0 : '0 days',
+    30: '30 days'
+};
 
 const { Title, Text } = Typography;
 
@@ -63,18 +68,30 @@ function Parameters() {
             </div> 
             {/* Epidemiological Parameters */}
             <Title level={3} style={{textAlign: 'left', marginBottom: '28px'}}>Epidemiological Parameters</Title>
-            <Row gutter={16}>
+            <Row gutter={48}>
                 <Col className="gutter-row" span={6}>
-                    <div style={style}>col-6</div>
+                    <div>
+                        <h3 style={{textAlign: 'left'}}>Infectiousness (Beta)</h3>
+                        <Slider marks={marks} defaultValue={0} min={0} max={30}/>
+                    </div>
                 </Col>
                 <Col className="gutter-row" span={6}>
-                    <div style={style}>col-6</div>
+                    <div>
+                        <h3 style={{textAlign: 'left'}}>Time to Infectiousness (Days)</h3>
+                        <Slider marks={marks} defaultValue={0} min={0} max={30}/>
+                    </div>
                 </Col>
                 <Col className="gutter-row" span={6}>
-                    <div style={style}>col-6</div>
+                    <div>
+                            <h3 style={{textAlign: 'left'}}>Asymptomatic Period (Days)</h3>
+                            <Slider marks={marks} defaultValue={0} min={0} max={30}/>
+                    </div>
                 </Col>
                 <Col className="gutter-row" span={6}>
-                    <div style={style}>col-6</div>
+                    <div>
+                            <h3 style={{textAlign: 'left'}}>Time to Infectiousness (Days)</h3>
+                            <Slider marks={marks} defaultValue={0} min={0} max={30}/>
+                    </div>
                 </Col>
             </Row>
             
