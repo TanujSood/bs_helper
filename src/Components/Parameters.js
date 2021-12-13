@@ -1,26 +1,83 @@
 import React from 'react';
+import {useState} from 'react';
 import 'antd/dist/antd.css';
 import './theme.css';
 
 import { Row, Col, Divider } from 'antd';
 import { Typography, Layout } from 'antd';
 import { InputNumber, Button, Slider } from 'antd';
-
+import { CodeBlock, CopyBlock, dracula } from "react-code-blocks";
 const style = { background: '#0092ff', height: '100px', padding: '8px 0' };
 const Footer = Layout;
 
-function onChange(value) {
-    console.log('changed', value);
-  }
+
+const { Title, Paragraph, Text } = Typography;
+
+const language = "jsx"
+
+
 
 const marks = {
     0 : '0 days',
     30: '30 days'
 };
 
-const { Title, Text } = Typography;
 
 function Parameters() {
+    const [days, setDays] = useState(0);
+    const [size, setSize] = useState(0);
+    const [infection, setInfection] = useState(0);
+    const [seed, setSeed] = useState(0);
+    const [timeInfectiousness, setTimeInfectiousness] = useState(0);
+    const [infectiousness, setInfectiousness] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const [asymptomatic, setAsymptomatic] = useState(0);
+    const [snippet, setSnippet] = useState(false);
+    const [buttonState, setButtonState] = useState(true);
+    const buttonRef = React.useRef();
+
+    function onSubmitSnippet() {
+        const values = {
+            days,
+            size,
+            infection,
+            seed,
+            timeInfectiousness,
+            infectiousness,
+            duration,
+            asymptomatic
+        }
+        setSnippet(true);
+        // setButtonState(!buttonState);
+        // buttonRef.current.disabled = buttonState;
+    }
+
+    const code = 
+    `class HelloMessage extends React.Component {
+        handlePress = () => {
+            alert()
+        }
+        render() {
+            return (
+                <div>
+                    <p>Hello ${days}</p>
+                    <button onClick={this.handlePress}>Say Hello</button>
+                </div>
+            );
+        }
+    }
+                
+    ReactDOM.render(
+        <HelloMessage name="Taylor" />, 
+        mountNode 
+    );`
+
+
+    function onChange(value) {
+        setDays(value)
+    }
+    
+
     return (
         <div>
             {/* Title Content */}
@@ -37,7 +94,7 @@ function Parameters() {
                 <Col className="gutter-row" span={6}>
                     <div style={{ display: 'flex', flexDirection: 'column'}}>
                         <h3 style={{textAlign: 'left'}}>Simulation Days</h3>
-                        <InputNumber style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChange} />
+                        <InputNumber name="days" style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChange} />
                     </div>
                 </Col>
 
@@ -45,7 +102,7 @@ function Parameters() {
                 <Col className="gutter-row" span={6}>
                     <div style={{ display: 'flex', flexDirection: 'column'}}>
                         <h3 style={{textAlign: 'left'}}>Population Size</h3>
-                        <InputNumber style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChange} />
+                        <InputNumber name="size" style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChange} />
                     </div>
                 </Col>
 
@@ -53,7 +110,7 @@ function Parameters() {
                 <Col className="gutter-row" span={6}>
                     <div style={{ display: 'flex', flexDirection: 'column'}}>
                         <h3 style={{textAlign: 'left'}}>Initial Infections</h3>
-                        <InputNumber style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChange} />
+                        <InputNumber name="infections" style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChange} />
                     </div>
                 </Col>
 
@@ -61,7 +118,7 @@ function Parameters() {
                 <Col className="gutter-row" span={6}>
                     <div style={{ display: 'flex', flexDirection: 'column'}}>
                         <h3 style={{textAlign: 'left'}}>Random Seed</h3>
-                        <InputNumber style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChange} />
+                        <InputNumber name="seed" style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChange} />
                     </div>
                 </Col>
             </Row>
@@ -72,32 +129,47 @@ function Parameters() {
                 <Col className="gutter-row" span={6}>
                     <div>
                         <h3 style={{textAlign: 'left'}}>Infectiousness (Beta)</h3>
-                        <Slider marks={marks} defaultValue={0} min={0} max={30}/>
+                        <Slider name="infectiousness" marks={marks} defaultValue={0} min={0} max={30} onChange={onChange}/>
                     </div>
                 </Col>
                 <Col className="gutter-row" span={6}>
                     <div>
                         <h3 style={{textAlign: 'left'}}>Time to Infectiousness (Days)</h3>
-                        <Slider marks={marks} defaultValue={0} min={0} max={30}/>
+                        <Slider name="timeInfectiousness" marks={marks} defaultValue={0} min={0} max={30} onChange={onChange}/>
                     </div>
                 </Col>
                 <Col className="gutter-row" span={6}>
                     <div>
                             <h3 style={{textAlign: 'left'}}>Asymptomatic Period (Days)</h3>
-                            <Slider marks={marks} defaultValue={0} min={0} max={30}/>
+                            <Slider name="asymptomatic" marks={marks} defaultValue={0} min={0} max={30} onChange={onChange}/>
                     </div>
                 </Col>
                 <Col className="gutter-row" span={6}>
                     <div>
-                            <h3 style={{textAlign: 'left'}}>Time to Infectiousness (Days)</h3>
-                            <Slider marks={marks} defaultValue={0} min={0} max={30}/>
+                            <h3 style={{textAlign: 'left'}}>Infection Duration (Days)</h3>
+                            <Slider name="duration" marks={marks} defaultValue={0} min={0} max={30} onChange={onChange}/>
                     </div>
                 </Col>
             </Row>
+            <div>
+            {snippet === true && (
+            <div style={{textAlign: 'left'}}>
+                <Title level={5}>src/files/parameters.jar</Title>
+                <Paragraph>Line 104 - Line 110</Paragraph>
+                <CopyBlock
+                    text={code}
+                    language={language}
+                    showLineNumbers={true}
+                    theme={dracula}
+                 />
+            </div>
+            )}
+        </div>
+
             
             <Footer>
                 <Divider />
-                <Button style={{width: '20%'}} type="primary">Get Code Snippet</Button>
+                <Button style={{width: '20%'}} type="primary" onClick={onSubmitSnippet}>Get Code Snippet</Button>
             </Footer>
         </div>
     )
