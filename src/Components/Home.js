@@ -3,17 +3,13 @@ import React from 'react';
 import { useState } from 'react';
 import 'antd/dist/antd.css';
 import './theme.css';
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Parameters from './Parameters'
-import {
-  DesktopOutlined,
-  PieChartOutlined,
-  FileOutlined,
-} from '@ant-design/icons';
 
-import Submit from './Submit';
+import Output from './Output';
+import Intervention from './Intervention';
 import Test from './Test';
-import Snippet from './Snippet';
-
+import Nav from './Nav';
 const { Header, Content, Sider } = Layout;
 
 function Home(){
@@ -32,30 +28,24 @@ function Home(){
     return (
       <Layout style={{ minHeight: '100vh' }}>
         <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
-          <div className="logo" style={{textAlign: 'center', display: 'flex', justifyContent: 'center'}}>BharatSim</div>
-          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-            <Menu.Item key="1" icon={<PieChartOutlined />}>
-              Parameters
-            </Menu.Item>
-            <Menu.Item key="2" icon={<DesktopOutlined />}>
-              Interventions
-            </Menu.Item>
-            <Menu.Item key="3" icon={<FileOutlined />}>
-              Output
-            </Menu.Item>
-          </Menu>
+          <div className="logo" style={{textAlign: 'center', display: 'flex', justifyContent: 'center'}}><h1>BharatSim</h1></div>
+          <Nav />
         </Sider>
         <Layout className="site-layout">
           <Header className="site-layout-background" style={{ padding: 0 }} />
-          {/* <div>
-          <Submit onSubmitt={value => {
-          onSubmitt(value)
-        }}/>
-          <Snippet />
-        
-      </div> */}
           <Content style={{ margin: '24px 24px' }}>
-            <Parameters />
+            {/* Navigation and Routing */}
+            
+              <div>
+                <Routes>
+                  <Route path="/" element={<Parameters />} />
+                  <Route path="/parameters" element={<Parameters />} />
+                  <Route path="/output" element={<Output />} />
+                  <Route path="/intervention" element={<Intervention />} />
+                </Routes>
+                </div>
+            
+          
           </Content>
         </Layout>
       </Layout>

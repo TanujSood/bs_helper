@@ -2,26 +2,23 @@ import React from 'react';
 import {useState} from 'react';
 import 'antd/dist/antd.css';
 import './theme.css';
+import { Tooltip } from 'antd';
 
 import { Row, Col, Divider } from 'antd';
 import { Typography, Layout } from 'antd';
 import { InputNumber, Button, Slider } from 'antd';
 import { CodeBlock, CopyBlock, dracula } from "react-code-blocks";
-const style = { background: '#0092ff', height: '100px', padding: '8px 0' };
 const Footer = Layout;
 
 
 const { Title, Paragraph, Text } = Typography;
 
-const language = "jsx"
-
-
+const language = "scala"
 
 const marks = {
     0 : '0 days',
     30: '30 days'
 };
-
 
 function Parameters() {
     const [days, setDays] = useState(0);
@@ -32,6 +29,7 @@ function Parameters() {
     const [infectiousness, setInfectiousness] = useState(0);
     const [duration, setDuration] = useState(0);
     const [asymptomatic, setAsymptomatic] = useState(0);
+    const [death, setDeath] = useState(0);
     const [snippet, setSnippet] = useState(false);
     const [buttonState, setButtonState] = useState(true);
     const buttonRef = React.useRef();
@@ -45,7 +43,8 @@ function Parameters() {
             timeInfectiousness,
             infectiousness,
             duration,
-            asymptomatic
+            asymptomatic,
+            death
         }
         setSnippet(true);
         // setButtonState(!buttonState);
@@ -53,29 +52,70 @@ function Parameters() {
     }
 
     const code = 
-    `class HelloMessage extends React.Component {
-        handlePress = () => {
-            alert()
-        }
-        render() {
-            return (
-                <div>
-                    <p>Hello ${days}</p>
-                    <button onClick={this.handlePress}>Say Hello</button>
-                </div>
-            );
-        }
-    }
-                
-    ReactDOM.render(
-        <HelloMessage name="Taylor" />, 
-        mountNode 
-    );`
+    `package com.bharatsim.model
+
+    import com.bharatsim.engine.distributions.LogNormal
+    
+    object Disease {
+      final val asymptomaticPopulationPercentage = ${days/100}
+      final val severeInfectedPopulationPercentage = 0.3
+    
+      final val exposedDurationProbabilityDistribution = LogNormal(4.6, 4.8)
+      final val presymptomaticDurationProbabilityDistribution = LogNormal(1, 1)
+      final val asymptomaticDurationProbabilityDistribution = LogNormal(8, 2)
+      final val mildSymptomaticDurationProbabilityDistribution = LogNormal(8, 2)
+      final val severeSymptomaticDurationProbabilityDistribution = LogNormal(14, 2.4)
+    
+      final val infectionRate: Double = ${infectiousness}
+      final val deathRate = 0.02
+      final val dt = 1.toDouble / ${death}.toDouble
+      final val inverse_dt = ${death}.toDouble / 1.toDouble
+    
+      //  Does not have any effect, can be used to model reduced chances of catching an infection due to masking or such other interventions
+      final val betaMultiplier = 1.0
+      final val transmissionReduction = 0.8
+    
+      final val vaccinationRate = 0.05
+      final val vaccinatedGammaFractionalIncrease = 1.0
+    }`
 
 
-    function onChange(value) {
+    function onChangeDays(value) {
         setDays(value)
     }
+
+    function onChangeSize(value) {
+        setSize(value)
+    }
+
+    function onChangeInfection(value) {
+        setInfection(value)
+    }
+
+    function onChangeSeed(value) {
+        setSeed(value)
+    }
+
+    function onChangeTimeInfectiousness(value) {
+        setTimeInfectiousness(value)
+    }
+
+    function onChangeInfectiousness(value) {
+        setInfectiousness(value)
+    }
+
+    function onChangeDuration(value) {
+        setDuration(value)
+        setAsymptomatic(value)
+    }
+
+    function onChangeAsymptomatic(value) {
+         setAsymptomatic(value)
+    }
+
+    function onChangeDeath(value) {
+        setDeath(value)
+   }
     
 
     return (
@@ -93,8 +133,8 @@ function Parameters() {
                 {/* Simulation Days */}
                 <Col className="gutter-row" span={6}>
                     <div style={{ display: 'flex', flexDirection: 'column'}}>
-                        <h3 style={{textAlign: 'left'}}>Simulation Days</h3>
-                        <InputNumber name="days" style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChange} />
+                        <h3 style={{textAlign: 'left'}}><Tooltip title="Number of days to run the simulation.">Simulation Days</Tooltip></h3>
+                        <InputNumber name="days" style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChangeDays} />
                     </div>
                 </Col>
 
@@ -102,7 +142,7 @@ function Parameters() {
                 <Col className="gutter-row" span={6}>
                     <div style={{ display: 'flex', flexDirection: 'column'}}>
                         <h3 style={{textAlign: 'left'}}>Population Size</h3>
-                        <InputNumber name="size" style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChange} />
+                        <InputNumber name="size" style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChangeSize} />
                     </div>
                 </Col>
 
@@ -110,7 +150,7 @@ function Parameters() {
                 <Col className="gutter-row" span={6}>
                     <div style={{ display: 'flex', flexDirection: 'column'}}>
                         <h3 style={{textAlign: 'left'}}>Initial Infections</h3>
-                        <InputNumber name="infections" style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChange} />
+                        <InputNumber name="infections" style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChangeInfection} />
                     </div>
                 </Col>
 
@@ -118,7 +158,7 @@ function Parameters() {
                 <Col className="gutter-row" span={6}>
                     <div style={{ display: 'flex', flexDirection: 'column'}}>
                         <h3 style={{textAlign: 'left'}}>Random Seed</h3>
-                        <InputNumber name="seed" style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChange} />
+                        <InputNumber name="seed" style={{width: '100%'}} size='large' min={0} max={1000000} defaultValue={0} onChange={onChangeSeed} />
                     </div>
                 </Col>
             </Row>
@@ -129,32 +169,56 @@ function Parameters() {
                 <Col className="gutter-row" span={6}>
                     <div>
                         <h3 style={{textAlign: 'left'}}>Infectiousness (Beta)</h3>
-                        <Slider name="infectiousness" marks={marks} defaultValue={0} min={0} max={30} onChange={onChange}/>
+                        <Slider name="infectiousness" marks={marks} defaultValue={0} min={0} max={30} onChange={onChangeInfectiousness} />
                     </div>
                 </Col>
                 <Col className="gutter-row" span={6}>
                     <div>
                         <h3 style={{textAlign: 'left'}}>Time to Infectiousness (Days)</h3>
-                        <Slider name="timeInfectiousness" marks={marks} defaultValue={0} min={0} max={30} onChange={onChange}/>
+                        <Slider name="timeInfectiousness" marks={marks} defaultValue={0} min={0} max={30} onChange={onChangeTimeInfectiousness} />
                     </div>
                 </Col>
                 <Col className="gutter-row" span={6}>
                     <div>
                             <h3 style={{textAlign: 'left'}}>Asymptomatic Period (Days)</h3>
-                            <Slider name="asymptomatic" marks={marks} defaultValue={0} min={0} max={30} onChange={onChange}/>
+                            <Slider name="asymptomatic" marks={marks} defaultValue={0} min={0} max={30} onChange={onChangeAsymptomatic} />
                     </div>
                 </Col>
                 <Col className="gutter-row" span={6}>
                     <div>
                             <h3 style={{textAlign: 'left'}}>Infection Duration (Days)</h3>
-                            <Slider name="duration" marks={marks} defaultValue={0} min={0} max={30} onChange={onChange}/>
+                            <Slider name="duration" marks={marks} defaultValue={0} min={0} max={30} onChange={onChangeDuration} />
+                    </div>
+                </Col>
+            </Row>
+            <Row style={{marginTop:'40px'}}gutter={48}>
+                <Col className="gutter-row" span={6}>
+                    <div>
+                        <h3 style={{textAlign: 'left'}}>Infection Duration (Days)</h3>
+                        <Slider name="infectiousness" marks={marks} defaultValue={0} min={0} max={30} />
+                    </div>
+                </Col>
+                <Col className="gutter-row" span={6}>
+                    <div>
+                        <h3 style={{textAlign: 'left'}}>Time to Death (Days)</h3>
+                        <Slider name="timeInfectiousness" marks={marks} defaultValue={0} min={0} max={30} onChange={onChangeDeath}/>
                     </div>
                 </Col>
             </Row>
             <div>
             {snippet === true && (
-            <div style={{textAlign: 'left'}}>
-                <Title level={5}>src/files/parameters.jar</Title>
+            <div style={{textAlign: 'left', marginTop:'40px'}}>
+                <Title>Code Snippets</Title>
+                <Title level={5}>src/models/disease.scala</Title>
+                <Paragraph>Line 1</Paragraph>
+                <CopyBlock
+                    text={code}
+                    language={language}
+                    showLineNumbers={true}
+                    theme={dracula}
+                 />
+
+                <Title level={5} style={{marginTop:'50px'}}>src/models/disease.scala</Title>
                 <Paragraph>Line 104 - Line 110</Paragraph>
                 <CopyBlock
                     text={code}
